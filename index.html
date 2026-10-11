@@ -32,11 +32,14 @@
     }
 
     body {
+      position: relative;
+      isolation: isolate;
       min-height: 100vh;
       overflow-x: hidden;
       color: var(--ink);
       background: linear-gradient(115deg, #fffdf7, #dff8f7, #eee9ff, #fdf8ff, #dff6f5);
       background-size: 320% 320%;
+      transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
       animation: meshDrift 24s ease-in-out infinite alternate;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.5;
@@ -72,6 +75,16 @@
       100% { background-position: 35% 100%; }
     }
 
+    /* Keep injected floating ad surfaces inside a viewport-safe stacking frame. */
+    body > [id*="social" i],
+    body > [class*="social" i] {
+      position: fixed !important;
+      z-index: 2147483000 !important;
+      inset: auto 0 0 0;
+      max-width: 100vw;
+      pointer-events: auto;
+    }
+
     button,
     input {
       font: inherit;
@@ -82,6 +95,8 @@
     }
 
     .app-shell {
+      position: relative;
+      z-index: 1;
       width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
       padding: 28px 0 52px;
@@ -180,8 +195,11 @@
 
     .main-card,
     .ad-card {
+      position: relative;
+      z-index: 1;
       min-width: 0;
       border-radius: 28px;
+      pointer-events: auto;
     }
 
     .main-card {
@@ -230,7 +248,10 @@
     }
 
     .calculator-grid {
+      position: relative;
+      z-index: 2;
       display: grid;
+      pointer-events: auto;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
       margin-bottom: 24px;
@@ -249,8 +270,11 @@
       font-weight: 750;
     }
 
+    .field,
     .input-wrap {
       position: relative;
+      z-index: 2;
+      pointer-events: auto;
     }
 
     .currency-symbol {
@@ -264,6 +288,8 @@
     }
 
     input {
+      position: relative;
+      z-index: 3;
       width: 100%;
       min-height: 54px;
       padding: 0 14px 0 32px;
