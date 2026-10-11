@@ -9,18 +9,15 @@
 
   <style>
     :root {
-      --bg-deep: #0b0820;
-      --bg-mid: #17104a;
-      --bg-blue: #123f9a;
-      --glass: rgba(255, 255, 255, 0.09);
-      --glass-strong: rgba(255, 255, 255, 0.14);
-      --line: rgba(255, 255, 255, 0.16);
-      --text: #f7f8ff;
-      --muted: rgba(236, 239, 255, 0.68);
-      --violet: #8f6bff;
-      --cyan: #39d9ff;
-      --mint: #61f6c5;
-      --shadow: rgba(3, 2, 20, 0.45);
+      --ink: #202338;
+      --muted: #626b86;
+      --white: rgba(255, 255, 255, 0.45);
+      --white-strong: rgba(255, 255, 255, 0.66);
+      --stroke: rgba(255, 255, 255, 0.6);
+      --violet: #8b7cff;
+      --cyan: #4bdbe7;
+      --mint: #52c9a4;
+      --shadow: rgba(31, 38, 135, 0.05);
     }
 
     * {
@@ -31,18 +28,16 @@
 
     html {
       min-width: 320px;
-      background: var(--bg-deep);
+      background: #e8f5f4;
     }
 
     body {
       min-height: 100vh;
       overflow-x: hidden;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 8% 8%, rgba(143, 107, 255, 0.38), transparent 28rem),
-        radial-gradient(circle at 92% 12%, rgba(57, 217, 255, 0.24), transparent 26rem),
-        radial-gradient(circle at 55% 100%, rgba(97, 246, 197, 0.12), transparent 30rem),
-        linear-gradient(135deg, var(--bg-deep), var(--bg-mid) 52%, var(--bg-blue));
+      color: var(--ink);
+      background: linear-gradient(115deg, #fffdf7, #dff8f7, #eee9ff, #fdf8ff, #dff6f5);
+      background-size: 320% 320%;
+      animation: meshDrift 24s ease-in-out infinite alternate;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.5;
     }
@@ -51,24 +46,30 @@
     body::after {
       position: fixed;
       z-index: -1;
-      width: 22rem;
-      height: 22rem;
+      width: 28rem;
+      height: 28rem;
       border-radius: 50%;
-      background: rgba(143, 107, 255, 0.11);
-      filter: blur(2px);
       content: "";
+      filter: blur(8px);
       pointer-events: none;
     }
 
     body::before {
-      top: 42%;
-      left: -12rem;
+      top: -10rem;
+      left: -9rem;
+      background: rgba(255, 240, 198, 0.42);
     }
 
     body::after {
       right: -10rem;
-      bottom: -8rem;
-      background: rgba(57, 217, 255, 0.1);
+      bottom: -12rem;
+      background: rgba(165, 220, 255, 0.32);
+    }
+
+    @keyframes meshDrift {
+      0% { background-position: 0% 35%; }
+      50% { background-position: 100% 65%; }
+      100% { background-position: 35% 100%; }
     }
 
     button,
@@ -90,14 +91,13 @@
     .main-card,
     .ad-card,
     .result-card,
-    .native-ad-card,
-    .sponsored-card,
-    .message {
-      border: 1px solid var(--line);
-      background: var(--glass);
-      box-shadow: 0 22px 60px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+    .message,
+    .static-ad {
+      border: 1px solid var(--stroke);
+      background: var(--white);
+      box-shadow: 0 8px 32px 0 var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
     }
 
     .topbar {
@@ -107,9 +107,9 @@
       gap: 24px;
       width: 100%;
       min-height: 0;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
       padding: 20px;
-      border-radius: 22px;
+      border-radius: 24px;
     }
 
     .brand {
@@ -125,20 +125,19 @@
       width: 48px;
       height: 48px;
       place-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
       color: #fff;
       background: linear-gradient(135deg, var(--violet), var(--cyan));
-      box-shadow: 0 10px 28px rgba(57, 217, 255, 0.22);
-      font-size: 1.55rem;
+      box-shadow: 0 10px 24px rgba(100, 123, 220, 0.22);
+      font-size: 1.5rem;
       font-weight: 900;
     }
 
     .brand h1 {
-      overflow-wrap: anywhere;
-      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      font-size: clamp(1.05rem, 2.5vw, 1.4rem);
       font-weight: 800;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.045em;
     }
 
     .brand p {
@@ -153,10 +152,10 @@
     .status-pill {
       flex: 0 0 auto;
       padding: 8px 12px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--stroke);
       border-radius: 999px;
       color: var(--muted);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.35);
       font-size: 0.72rem;
       font-weight: 700;
       white-space: nowrap;
@@ -169,23 +168,23 @@
       margin-right: 7px;
       border-radius: 50%;
       background: var(--mint);
-      box-shadow: 0 0 12px var(--mint);
+      box-shadow: 0 0 10px rgba(82, 201, 164, 0.8);
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(250px, 300px);
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 310px);
       gap: 22px;
       align-items: start;
     }
 
     .main-card,
     .ad-card {
-      border-radius: 26px;
+      min-width: 0;
+      border-radius: 28px;
     }
 
     .main-card {
-      min-width: 0;
       padding: clamp(22px, 5vw, 46px);
     }
 
@@ -197,10 +196,10 @@
       display: inline-flex;
       margin-bottom: 16px;
       padding: 7px 11px;
-      border: 1px solid rgba(143, 107, 255, 0.45);
+      border: 1px solid rgba(139, 124, 255, 0.28);
       border-radius: 999px;
-      color: #dcd4ff;
-      background: rgba(143, 107, 255, 0.14);
+      color: #6559c7;
+      background: rgba(255, 255, 255, 0.42);
       font-size: 0.7rem;
       font-weight: 800;
       letter-spacing: 0.1em;
@@ -208,25 +207,24 @@
     }
 
     .hero h2 {
-      max-width: 760px;
+      max-width: 780px;
       margin-bottom: 14px;
-      color: #fff;
-      font-size: clamp(2.15rem, 6vw, 4.7rem);
+      color: var(--ink);
+      font-size: clamp(2.2rem, 6vw, 4.8rem);
       font-weight: 850;
-      letter-spacing: -0.075em;
+      letter-spacing: -0.08em;
       line-height: 0.98;
     }
 
     .hero h2 span {
-      display: inline;
       color: transparent;
-      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      background: linear-gradient(90deg, #6256dc, #13aebd);
       -webkit-background-clip: text;
       background-clip: text;
     }
 
     .hero p {
-      max-width: 620px;
+      max-width: 640px;
       color: var(--muted);
       font-size: 0.95rem;
     }
@@ -235,7 +233,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
     }
 
     .field {
@@ -246,9 +244,9 @@
     }
 
     .field label {
-      color: rgba(245, 247, 255, 0.88);
+      color: var(--ink);
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .input-wrap {
@@ -259,7 +257,7 @@
       position: absolute;
       top: 50%;
       left: 14px;
-      color: rgba(255, 255, 255, 0.65);
+      color: #7b83a0;
       font-size: 0.95rem;
       transform: translateY(-50%);
       pointer-events: none;
@@ -269,54 +267,54 @@
       width: 100%;
       min-height: 54px;
       padding: 0 14px 0 32px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      border-radius: 15px;
       outline: none;
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.075);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.42);
+      box-shadow: inset 0 1px 2px rgba(31, 38, 135, 0.04), 0 4px 14px rgba(31, 38, 135, 0.035);
       font-size: 0.98rem;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     }
 
     input::placeholder {
-      color: rgba(232, 236, 255, 0.38);
+      color: #9199b0;
     }
 
     input:focus {
-      border-color: rgba(57, 217, 255, 0.82);
-      background: rgba(255, 255, 255, 0.12);
-      box-shadow: 0 0 0 4px rgba(57, 217, 255, 0.12), 0 0 24px rgba(57, 217, 255, 0.13);
+      border-color: rgba(98, 86, 220, 0.5);
+      background: rgba(255, 255, 255, 0.66);
+      box-shadow: 0 0 0 4px rgba(98, 86, 220, 0.1), 0 7px 20px rgba(31, 38, 135, 0.07);
     }
 
     .results {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
-      margin-top: 22px;
+      margin-top: 20px;
     }
 
     .result-card {
       min-width: 0;
       min-height: 154px;
       padding: 20px;
-      border-radius: 20px;
+      border-radius: 21px;
     }
 
     .result-card.highlight {
-      border-color: rgba(97, 246, 197, 0.35);
-      background: linear-gradient(145deg, rgba(97, 246, 197, 0.17), rgba(255, 255, 255, 0.07));
+      border-color: rgba(82, 201, 164, 0.45);
+      background: rgba(205, 255, 237, 0.42);
     }
 
     .result-label {
       color: var(--muted);
       font-size: 0.76rem;
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .result-value {
       margin: 12px 0 6px;
-      color: #fff;
+      color: var(--ink);
       font-size: clamp(2rem, 5vw, 3.3rem);
       font-weight: 850;
       letter-spacing: -0.07em;
@@ -324,7 +322,7 @@
     }
 
     .result-note {
-      color: rgba(236, 239, 255, 0.58);
+      color: var(--muted);
       font-size: 0.72rem;
     }
 
@@ -332,21 +330,21 @@
       min-height: 42px;
       margin-top: 18px;
       padding: 10px 13px;
-      border-radius: 13px;
+      border-radius: 14px;
       color: var(--muted);
       font-size: 0.78rem;
     }
 
     .message.success {
-      border-color: rgba(97, 246, 197, 0.35);
-      color: var(--mint);
-      background: rgba(97, 246, 197, 0.1);
+      border-color: rgba(82, 201, 164, 0.45);
+      color: #24775f;
+      background: rgba(205, 255, 237, 0.48);
     }
 
     .message.warning {
-      border-color: rgba(255, 184, 108, 0.38);
-      color: #ffc98e;
-      background: rgba(255, 184, 108, 0.1);
+      border-color: rgba(218, 155, 74, 0.45);
+      color: #8a5b1f;
+      background: rgba(255, 232, 187, 0.52);
     }
 
     .cta {
@@ -358,10 +356,10 @@
       margin-top: 18px;
       padding: 16px 18px;
       border: 0;
-      border-radius: 15px;
+      border-radius: 16px;
       color: #fff;
-      background: linear-gradient(100deg, #7657ff, #11ccef);
-      box-shadow: 0 14px 30px rgba(65, 93, 255, 0.27);
+      background: linear-gradient(100deg, #7162e9, #18b8c6);
+      box-shadow: 0 12px 24px rgba(98, 86, 220, 0.2);
       cursor: pointer;
       font-size: 0.86rem;
       font-weight: 800;
@@ -370,20 +368,20 @@
     }
 
     .cta:hover {
-      filter: brightness(1.1);
-      box-shadow: 0 17px 36px rgba(65, 93, 255, 0.38);
+      filter: brightness(1.05);
+      box-shadow: 0 16px 30px rgba(98, 86, 220, 0.28);
       transform: translateY(-2px);
     }
 
     .cta:focus-visible {
-      outline: 3px solid var(--cyan);
+      outline: 3px solid #6256dc;
       outline-offset: 4px;
     }
 
     .cta small {
       display: block;
       margin-top: 4px;
-      color: rgba(255, 255, 255, 0.72);
+      color: rgba(255, 255, 255, 0.78);
       font-size: 0.68rem;
       font-weight: 500;
     }
@@ -397,40 +395,17 @@
       position: sticky;
       top: 22px;
       display: flex;
-      min-height: 420px;
-      min-width: 0;
+      min-height: 520px;
       padding: 18px;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 16px;
       overflow: hidden;
-      background: linear-gradient(155deg, rgba(255, 255, 255, 0.12), rgba(143, 107, 255, 0.08));
-    }
-
-    .sponsored-card {
-      margin-bottom: 18px;
-      padding: 14px;
-      border-radius: 17px;
-      text-align: center;
-    }
-
-    .sponsored-card strong {
-      display: block;
-      margin-bottom: 12px;
-      color: #fff;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-    }
-
-    .sidebar-native-ad {
-      width: 100%;
-      min-height: 90px;
-      overflow: hidden;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.12);
+      background: rgba(255, 255, 255, 0.38);
     }
 
     .ad-content {
-      padding: 20px 8px;
+      order: 0;
+      padding: 8px 6px 4px;
       text-align: center;
     }
 
@@ -438,31 +413,78 @@
       display: grid;
       width: 64px;
       height: 64px;
-      margin: 0 auto 16px;
+      margin: 0 auto 14px;
       place-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.75);
       border-radius: 20px;
       color: #fff;
-      background: linear-gradient(135deg, rgba(143, 107, 255, 0.6), rgba(57, 217, 255, 0.45));
-      box-shadow: 0 12px 30px rgba(57, 217, 255, 0.12);
+      background: linear-gradient(135deg, #9b8cff, #53d8e4);
+      box-shadow: 0 12px 25px rgba(98, 86, 220, 0.18);
       font-size: 1.5rem;
     }
 
     .ad-content h3 {
-      margin-bottom: 8px;
-      font-size: 1rem;
-      font-weight: 750;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 1.08rem;
+      font-weight: 800;
     }
 
     .ad-content p {
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.76rem;
+    }
+
+    .static-ad {
+      padding: 16px;
+      border-radius: 19px;
+    }
+
+    .static-ad.figma {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 224, 238, 0.42));
+    }
+
+    .static-ad.quickbooks {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(217, 247, 234, 0.45));
+    }
+
+    .ad-kicker {
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.63rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .static-ad h4 {
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .static-ad p {
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .ad-link {
+      display: inline-flex;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(100deg, #7162e9, #18b8c6);
+      font-size: 0.68rem;
+      font-weight: 750;
     }
 
     .ad-footer {
+      margin-top: auto;
       padding-top: 13px;
-      border-top: 1px solid var(--line);
-      color: rgba(236, 239, 255, 0.45);
+      border-top: 1px solid rgba(255, 255, 255, 0.56);
+      color: #7e879f;
       font-size: 0.68rem;
       text-align: center;
     }
@@ -474,11 +496,11 @@
 
       .ad-card {
         position: relative;
-        min-height: 260px;
+        min-height: 0;
       }
 
       .ad-content {
-        padding: 18px 35px;
+        padding: 10px 32px;
       }
     }
 
@@ -512,7 +534,7 @@
     @media (max-width: 420px) {
       .main-card,
       .ad-card {
-        border-radius: 20px;
+        border-radius: 21px;
       }
 
       .main-card {
@@ -526,10 +548,6 @@
       .brand p {
         max-width: 220px;
         line-height: 1.35;
-      }
-
-      .cta {
-        align-items: flex-start;
       }
     }
   </style>
@@ -638,7 +656,7 @@
             <div class="result-label">Adjusted runway</div>
             <div class="result-value" id="adjustedRunway">—</div>
             <div class="result-note" id="adjustedNote">
-              Net monthly burn after income
+              Enter values to calculate
             </div>
           </article>
         </div>
@@ -656,26 +674,28 @@
         </button>
       </section>
 
-      <aside class="ad-card" aria-label="Advertisement placeholder">
-        <div class="sponsored-card" aria-label="Sponsored placements">
-          <strong>SPONSORED PLACEMENTS</strong>
-          <div class="sidebar-native-ad" aria-label="Responsive native advertisement">
-            <script async="async" data-cfasync="false" src="https://bauval.org/21/f5a2ddecac5f954ffeaf19dd9cc2d248"></script>
-            <div id="container-f5a2ddecac5f954ffeaf19dd9cc2d248"></div>
-          </div>
-        </div>
-
+      <aside class="ad-card" aria-label="Sponsored tools and resources">
         <div class="ad-content">
           <div class="ad-icon" aria-hidden="true">✦</div>
           <h3>Your ad could be here</h3>
-          <p>
-            Place a relevant offer, sponsor message, or useful resource in this
-            prominent sidebar position.
-          </p>
-
+          <p>Sponsor Message · Reach independent professionals building their next chapter.</p>
         </div>
 
-        <div class="ad-footer">Advertisement space</div>
+        <article class="static-ad figma">
+          <div class="ad-kicker">Creative workflow</div>
+          <h4>Figma Pro for Freelancers</h4>
+          <p>Design, prototype, and collaborate with clients from one beautiful workspace.</p>
+          <span class="ad-link">Explore Figma Pro →</span>
+        </article>
+
+        <article class="static-ad quickbooks">
+          <div class="ad-kicker">Business essentials</div>
+          <h4>QuickBooks Invoicing</h4>
+          <p>Send polished invoices and keep your freelance finances organized.</p>
+          <span class="ad-link">Try invoicing tools →</span>
+        </article>
+
+        <div class="ad-footer">Sponsored resources</div>
       </aside>
     </section>
   </main>
