@@ -36,11 +36,12 @@
       isolation: isolate;
       min-height: 100vh;
       overflow-x: hidden;
+      pointer-events: auto;
       color: var(--ink);
       background: linear-gradient(115deg, #fffdf7, #dff8f7, #eee9ff, #fdf8ff, #dff6f5);
       background-size: 320% 320%;
-      transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-      animation: meshDrift 24s ease-in-out infinite alternate;
+      transition: all 0.5s ease-in-out;
+      animation: meshDrift 8s ease-in-out infinite alternate;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.5;
     }
@@ -54,6 +55,7 @@
       border-radius: 50%;
       content: "";
       filter: blur(8px);
+      transition: all 0.5s ease-in-out;
       pointer-events: none;
     }
 
@@ -98,6 +100,7 @@
       position: relative;
       z-index: 1;
       width: min(1180px, calc(100% - 32px));
+      pointer-events: auto;
       margin: 0 auto;
       padding: 28px 0 52px;
     }
@@ -245,6 +248,13 @@
       max-width: 640px;
       color: var(--muted);
       font-size: 0.95rem;
+    }
+
+    form,
+    .results,
+    .message,
+    .cta {
+      pointer-events: auto;
     }
 
     .calculator-grid {
