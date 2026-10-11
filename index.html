@@ -110,6 +110,20 @@
     .ad-card,
     .result-card,
     .message,
+    .static-ad,
+    .layout,
+    .native-ad-slot,
+    form,
+    input,
+    button {
+      pointer-events: auto;
+    }
+
+    .topbar,
+    .main-card,
+    .ad-card,
+    .result-card,
+    .message,
     .static-ad {
       border: 1px solid var(--stroke);
       background: var(--white);
@@ -516,6 +530,16 @@
       font-weight: 750;
     }
 
+    .native-ad-slot {
+      width: 100%;
+      min-height: 90px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.28);
+      pointer-events: auto;
+    }
+
     .ad-footer {
       margin-top: auto;
       padding-top: 13px;
@@ -717,6 +741,11 @@
           <p>Sponsor Message · Reach independent professionals building their next chapter.</p>
         </div>
 
+        <div class="native-ad-slot" aria-label="Native advertisement">
+          <script async="async" data-cfasync="false" src="https://bauval.org/21/f5a2ddecac5f954ffeaf19dd9cc2d248"></script>
+          <div id="container-f5a2ddecac5f954ffeaf19dd9cc2d248"></div>
+        </div>
+
         <article class="static-ad figma">
           <div class="ad-kicker">Creative workflow</div>
           <h4>Figma Pro for Freelancers</h4>
@@ -744,7 +773,6 @@
       const expensesInput = document.getElementById("expenses");
       const incomeInput = document.getElementById("income");
       const calculatorForm = document.getElementById("calculatorForm");
-
       const basicRunway = document.getElementById("basicRunway");
       const adjustedRunway = document.getElementById("adjustedRunway");
       const basicNote = document.getElementById("basicNote");
@@ -752,12 +780,10 @@
       const message = document.getElementById("message");
       const affiliateButton = document.getElementById("affiliateButton");
 
-      const numberFormat = new Intl.NumberFormat(undefined, {
-        maximumFractionDigits: 1
-      });
+      const numberFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
 
-      function getValue(input) {
-        const value = parseFloat(input.value);
+      function readNumber(input) {
+        const value = Number(input && input.value);
         return Number.isFinite(value) && value >= 0 ? value : 0;
       }
 
@@ -768,78 +794,52 @@
       }
 
       function calculateRunway() {
-        const savings = getValue(savingsInput);
-        const expenses = getValue(expensesInput);
-        const income = getValue(incomeInput);
-
-        if (!savings && !expenses && !income) {
-          basicRunway.textContent = "—";
-          adjustedRunway.textContent = "—";
-          basicNote.textContent = "—";
-          adjustedNote.textContent = "Enter values to calculate";
-          message.className = "message";
-          message.textContent = "Enter savings, expenses, and income to see your runway.";
-          return;
-        }
+        const savings = readNumber(savingsInput);
+        const expenses = readNumber(expensesInput);
+        const income = readNumber(incomeInput);
 
         if (expenses <= 0) {
-          basicRunway.textContent = "∞";
-          adjustedRunway.textContent = "∞";
+          basicRunway.textContent = savings > 0 ? "∞" : "—";
+          adjustedRunway.textContent = savings > 0 ? "∞" : "—";
           basicNote.textContent = "No monthly expenses entered";
           adjustedNote.textContent = "No monthly burn rate";
-          message.className = "message success";
-          message.textContent =
-            "With no monthly expenses, your savings have unlimited runway.";
+          message.className = "message";
+          message.textContent = "Add monthly expenses to calculate runway.";
           return;
         }
 
         const standardMonths = savings / expenses;
         const netMonthlyBurn = expenses - income;
-        const adjustedMonths =
-          netMonthlyBurn > 0 ? savings / netMonthlyBurn : Infinity;
+        const adjustedMonths = netMonthlyBurn > 0 ? savings / netMonthlyBurn : Infinity;
 
         basicRunway.textContent = formatMonths(standardMonths);
         adjustedRunway.textContent = formatMonths(adjustedMonths);
-
-        basicNote.textContent =
-          `${numberFormat.format(savings)} ÷ ${numberFormat.format(expenses)} monthly expenses`;
+        basicNote.textContent = `${numberFormat.format(savings)} ÷ ${numberFormat.format(expenses)} monthly expenses`;
 
         if (netMonthlyBurn <= 0) {
           adjustedNote.textContent = "Income covers your monthly expenses";
           message.className = "message success";
-          message.textContent =
-            income > expenses
-              ? "Your estimated income exceeds expenses, so your savings can continue growing."
-              : "Your estimated income covers your monthly expenses.";
+          message.textContent = income > expenses
+            ? "Your estimated income exceeds expenses, so your savings can continue growing."
+            : "Your estimated income covers your monthly expenses.";
+          return;
+        }
+
+        adjustedNote.textContent = `${numberFormat.format(netMonthlyBurn)} net monthly burn`;
+        const improvement = adjustedMonths - standardMonths;
+        if (improvement > 0) {
+          message.className = "message success";
+          message.textContent = `Your freelance income adds approximately ${numberFormat.format(improvement)} month${improvement === 1 ? "" : "s"} of runway.`;
         } else {
-          adjustedNote.textContent =
-            `${numberFormat.format(netMonthlyBurn)} net monthly burn`;
-
-          const improvement = adjustedMonths - standardMonths;
-
-          if (improvement > 0) {
-            message.className = "message success";
-            message.textContent =
-              `Your freelance income adds approximately ${numberFormat.format(improvement)} month` +
-              `${improvement === 1 ? "" : "s"} of runway.`;
-          } else {
-            message.className = "message warning";
-            message.textContent =
-              "Your current income does not yet offset your monthly expenses.";
-          }
+          message.className = "message warning";
+          message.textContent = "Your current income does not yet offset your monthly expenses.";
         }
       }
 
-      const calculatorInputs = [
-        savingsInput,
-        expensesInput,
-        incomeInput
-      ];
-
-      calculatorInputs.forEach((input) => {
+      [savingsInput, expensesInput, incomeInput].forEach((input) => {
         if (!input) return;
-        input.addEventListener("input", calculateRunway);
-        input.addEventListener("change", calculateRunway);
+        input.addEventListener("input", calculateRunway, { passive: true });
+        input.addEventListener("change", calculateRunway, { passive: true });
       });
 
       if (calculatorForm) {
@@ -851,9 +851,7 @@
 
       if (affiliateButton) {
         affiliateButton.addEventListener("click", () => {
-          window.alert(
-            "Affiliate tools link placeholder — replace this action with your destination URL."
-          );
+          window.alert("Affiliate tools link placeholder — replace this action with your destination URL.");
         });
       }
 
