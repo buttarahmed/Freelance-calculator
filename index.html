@@ -642,8 +642,6 @@
       </section>
 
       <aside class="ad-card" aria-label="Advertisement placeholder">
-        <div class="ad-label">AD_BANNER_PLACEHOLDER</div>
-
         <div class="sponsored-card" aria-label="Sponsored placements">
           <strong>SPONSORED PLACEMENTS</strong>
           <div class="sidebar-native-ad" aria-label="Responsive native advertisement">
@@ -761,20 +759,32 @@
         }
       }
 
-      [savingsInput, expensesInput, incomeInput].forEach((input) => {
+      const calculatorInputs = [
+        savingsInput,
+        expensesInput,
+        incomeInput
+      ];
+
+      calculatorInputs.forEach((input) => {
+        if (!input) return;
         input.addEventListener("input", calculateRunway);
+        input.addEventListener("change", calculateRunway);
       });
 
-      calculatorForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        calculateRunway();
-      });
+      if (calculatorForm) {
+        calculatorForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          calculateRunway();
+        });
+      }
 
-      affiliateButton.addEventListener("click", () => {
-        window.alert(
-          "Affiliate tools link placeholder — replace this action with your destination URL."
-        );
-      });
+      if (affiliateButton) {
+        affiliateButton.addEventListener("click", () => {
+          window.alert(
+            "Affiliate tools link placeholder — replace this action with your destination URL."
+          );
+        });
+      }
 
       calculateRunway();
     })();
