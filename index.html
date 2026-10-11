@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Freelance Runway & Savings Calculator</title>
-  <meta name="monetag" content="686d9bce039e76d9968bf5c528c55e23">
+  <meta name="description" content="Freelance Runway and Savings Calculator" />
+  <title>Freelance Runway &amp; Savings Calculator</title>
+
   <style>
     :root {
       --white: #ffffff;
@@ -36,6 +37,10 @@
     button,
     input {
       font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app-shell {
@@ -315,6 +320,11 @@
       background: var(--yellow);
     }
 
+    .cta:focus-visible {
+      outline: 4px dashed var(--black);
+      outline-offset: 5px;
+    }
+
     .cta:active {
       box-shadow: 2px 2px 0 var(--black);
       transform: translate(6px, 6px);
@@ -342,6 +352,7 @@
       padding: 20px;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden;
       background: var(--pink);
     }
 
@@ -392,6 +403,15 @@
       text-transform: uppercase;
     }
 
+    .ad-script-slot {
+      width: 100%;
+      min-height: 90px;
+      margin-top: 18px;
+      overflow: hidden;
+      border: 3px solid var(--black);
+      background: var(--white);
+    }
+
     .ad-footer {
       padding: 12px 6px 0;
       border-top: 4px solid var(--black);
@@ -408,7 +428,7 @@
 
       .ad-card {
         position: relative;
-        min-height: 240px;
+        min-height: 290px;
       }
 
       .ad-content {
@@ -452,6 +472,10 @@
       .result-card {
         min-height: 160px;
       }
+
+      .ad-content {
+        padding: 20px 8px;
+      }
     }
   </style>
 </head>
@@ -460,7 +484,7 @@
   <main class="app-shell">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-mark">↗</div>
+        <div class="brand-mark" aria-hidden="true">↗</div>
         <div>
           <h1>Freelance Runway</h1>
           <p>Plan your next move with confidence</p>
@@ -468,17 +492,17 @@
       </div>
 
       <div class="status-pill">
-        <span class="status-dot"></span>
+        <span class="status-dot" aria-hidden="true"></span>
         Calculated locally
       </div>
     </header>
 
     <section class="layout">
-      <section class="main-card">
+      <section class="main-card" aria-labelledby="page-heading">
         <div class="hero">
           <div class="eyebrow">Financial clarity for freelancers</div>
 
-          <h2>
+          <h2 id="page-heading">
             How long can your savings
             <span>keep you running?</span>
           </h2>
@@ -489,54 +513,62 @@
           </p>
         </div>
 
-        <div class="calculator-grid">
-          <div class="field">
-            <label for="savings">Current total savings</label>
-            <div class="input-wrap">
-              <span class="currency-symbol" aria-hidden="true">¤</span>
-              <input
-                id="savings"
-                type="number"
-                min="0"
-                step="100"
-                placeholder="25,000"
-                inputmode="decimal"
-              />
+        <form id="calculatorForm" novalidate>
+          <div class="calculator-grid">
+            <div class="field">
+              <label for="savings">Current total savings</label>
+              <div class="input-wrap">
+                <span class="currency-symbol" aria-hidden="true">¤</span>
+                <input
+                  id="savings"
+                  name="savings"
+                  type="number"
+                  min="0"
+                  step="100"
+                  placeholder="25,000"
+                  inputmode="decimal"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="expenses">Average monthly expenses</label>
+              <div class="input-wrap">
+                <span class="currency-symbol" aria-hidden="true">¤</span>
+                <input
+                  id="expenses"
+                  name="expenses"
+                  type="number"
+                  min="0"
+                  step="50"
+                  placeholder="3,000"
+                  inputmode="decimal"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="income">Estimated monthly freelance income</label>
+              <div class="input-wrap">
+                <span class="currency-symbol" aria-hidden="true">¤</span>
+                <input
+                  id="income"
+                  name="income"
+                  type="number"
+                  min="0"
+                  step="50"
+                  placeholder="1,500"
+                  inputmode="decimal"
+                  autocomplete="off"
+                />
+              </div>
             </div>
           </div>
+        </form>
 
-          <div class="field">
-            <label for="expenses">Average monthly expenses</label>
-            <div class="input-wrap">
-              <span class="currency-symbol" aria-hidden="true">¤</span>
-              <input
-                id="expenses"
-                type="number"
-                min="0"
-                step="50"
-                placeholder="3,000"
-                inputmode="decimal"
-              />
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="income">Estimated monthly freelance income</label>
-            <div class="input-wrap">
-              <span class="currency-symbol" aria-hidden="true">¤</span>
-              <input
-                id="income"
-                type="number"
-                min="0"
-                step="50"
-                placeholder="1,500"
-                inputmode="decimal"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="results" aria-live="polite">
+        <div class="results" aria-live="polite" aria-atomic="true">
           <article class="result-card">
             <div class="result-label">Without freelance income</div>
             <div class="result-value" id="basicRunway">—</div>
@@ -554,7 +586,7 @@
           </article>
         </div>
 
-        <div class="message" id="message">
+        <div class="message" id="message" role="status">
           Your results update instantly as you type.
         </div>
 
@@ -571,12 +603,25 @@
         <div class="ad-label">AD_BANNER_PLACEHOLDER</div>
 
         <div class="ad-content">
-          <div class="ad-icon">✦</div>
+          <div class="ad-icon" aria-hidden="true">✦</div>
           <h3>Your ad could be here</h3>
           <p>
             Place a relevant offer, sponsor message, or useful resource in this
             prominent sidebar position.
           </p>
+
+          <div class="ad-script-slot" aria-label="Advertisement">
+            <script type="text/javascript">
+              atOptions = {
+                'key' : '9be1bfae9b584061a9da5e3a890d2e8f',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script type="text/javascript" src="//://highperformanceformat.com"></script>
+          </div>
         </div>
 
         <div class="ad-footer">Advertisement space</div>
@@ -585,106 +630,116 @@
   </main>
 
   <script>
-    const savingsInput = document.getElementById("savings");
-    const expensesInput = document.getElementById("expenses");
-    const incomeInput = document.getElementById("income");
+    (() => {
+      "use strict";
 
-    const basicRunway = document.getElementById("basicRunway");
-    const adjustedRunway = document.getElementById("adjustedRunway");
-    const basicNote = document.getElementById("basicNote");
-    const adjustedNote = document.getElementById("adjustedNote");
-    const message = document.getElementById("message");
-    const affiliateButton = document.getElementById("affiliateButton");
+      const savingsInput = document.getElementById("savings");
+      const expensesInput = document.getElementById("expenses");
+      const incomeInput = document.getElementById("income");
+      const calculatorForm = document.getElementById("calculatorForm");
 
-    const numberFormat = new Intl.NumberFormat(undefined, {
-      maximumFractionDigits: 1
-    });
+      const basicRunway = document.getElementById("basicRunway");
+      const adjustedRunway = document.getElementById("adjustedRunway");
+      const basicNote = document.getElementById("basicNote");
+      const adjustedNote = document.getElementById("adjustedNote");
+      const message = document.getElementById("message");
+      const affiliateButton = document.getElementById("affiliateButton");
 
-    function getValue(input) {
-      const value = parseFloat(input.value);
-      return Number.isFinite(value) && value >= 0 ? value : 0;
-    }
+      const numberFormat = new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 1
+      });
 
-    function formatMonths(months) {
-      if (!Number.isFinite(months)) return "∞";
-      if (months <= 0) return "0";
-      return `${numberFormat.format(months)} MO`;
-    }
-
-    function calculateRunway() {
-      const savings = getValue(savingsInput);
-      const expenses = getValue(expensesInput);
-      const income = getValue(incomeInput);
-
-      if (!savings && !expenses && !income) {
-        basicRunway.textContent = "—";
-        adjustedRunway.textContent = "—";
-        basicNote.textContent = "Enter your figures to calculate";
-        adjustedNote.textContent = "Savings after monthly income";
-        message.className = "message";
-        message.textContent = "Your results update instantly as you type.";
-        return;
+      function getValue(input) {
+        const value = parseFloat(input.value);
+        return Number.isFinite(value) && value >= 0 ? value : 0;
       }
 
-      if (expenses <= 0) {
-        basicRunway.textContent = "∞";
-        adjustedRunway.textContent = "∞";
-        basicNote.textContent = "No monthly expenses entered";
-        adjustedNote.textContent = "No monthly burn rate";
-        message.className = "message success";
-        message.textContent =
-          "With no monthly expenses, your savings have unlimited runway.";
-        return;
+      function formatMonths(months) {
+        if (!Number.isFinite(months)) return "∞";
+        if (months <= 0) return "0 MO";
+        return `${numberFormat.format(months)} MO`;
       }
 
-      const standardMonths = savings / expenses;
-      const netMonthlyBurn = expenses - income;
-      const adjustedMonths =
-        netMonthlyBurn > 0 ? savings / netMonthlyBurn : Infinity;
+      function calculateRunway() {
+        const savings = getValue(savingsInput);
+        const expenses = getValue(expensesInput);
+        const income = getValue(incomeInput);
 
-      basicRunway.textContent = formatMonths(standardMonths);
-      adjustedRunway.textContent = formatMonths(adjustedMonths);
+        if (!savings && !expenses && !income) {
+          basicRunway.textContent = "—";
+          adjustedRunway.textContent = "—";
+          basicNote.textContent = "Enter your figures to calculate";
+          adjustedNote.textContent = "Savings after monthly income";
+          message.className = "message";
+          message.textContent = "Your results update instantly as you type.";
+          return;
+        }
 
-      basicNote.textContent =
-        `${numberFormat.format(savings)} ÷ ${numberFormat.format(expenses)} monthly expenses`;
-
-      if (netMonthlyBurn <= 0) {
-        adjustedNote.textContent = "Income covers your monthly expenses";
-        message.className = "message success";
-        message.textContent =
-          income > expenses
-            ? "Your estimated income exceeds expenses, so your savings can continue growing."
-            : "Your estimated income covers your monthly expenses.";
-      } else {
-        adjustedNote.textContent =
-          `${numberFormat.format(netMonthlyBurn)} net monthly burn`;
-
-        const improvement = adjustedMonths - standardMonths;
-
-        if (improvement > 0) {
+        if (expenses <= 0) {
+          basicRunway.textContent = "∞";
+          adjustedRunway.textContent = "∞";
+          basicNote.textContent = "No monthly expenses entered";
+          adjustedNote.textContent = "No monthly burn rate";
           message.className = "message success";
           message.textContent =
-            `Your freelance income adds approximately ${numberFormat.format(improvement)} month` +
-            `${improvement === 1 ? "" : "s"} of runway.`;
-        } else {
-          message.className = "message warning";
+            "With no monthly expenses, your savings have unlimited runway.";
+          return;
+        }
+
+        const standardMonths = savings / expenses;
+        const netMonthlyBurn = expenses - income;
+        const adjustedMonths =
+          netMonthlyBurn > 0 ? savings / netMonthlyBurn : Infinity;
+
+        basicRunway.textContent = formatMonths(standardMonths);
+        adjustedRunway.textContent = formatMonths(adjustedMonths);
+
+        basicNote.textContent =
+          `${numberFormat.format(savings)} ÷ ${numberFormat.format(expenses)} monthly expenses`;
+
+        if (netMonthlyBurn <= 0) {
+          adjustedNote.textContent = "Income covers your monthly expenses";
+          message.className = "message success";
           message.textContent =
-            "Your current income does not yet offset your monthly expenses.";
+            income > expenses
+              ? "Your estimated income exceeds expenses, so your savings can continue growing."
+              : "Your estimated income covers your monthly expenses.";
+        } else {
+          adjustedNote.textContent =
+            `${numberFormat.format(netMonthlyBurn)} net monthly burn`;
+
+          const improvement = adjustedMonths - standardMonths;
+
+          if (improvement > 0) {
+            message.className = "message success";
+            message.textContent =
+              `Your freelance income adds approximately ${numberFormat.format(improvement)} month` +
+              `${improvement === 1 ? "" : "s"} of runway.`;
+          } else {
+            message.className = "message warning";
+            message.textContent =
+              "Your current income does not yet offset your monthly expenses.";
+          }
         }
       }
-    }
 
-    [savingsInput, expensesInput, incomeInput].forEach((input) => {
-      input.addEventListener("input", calculateRunway);
-    });
+      [savingsInput, expensesInput, incomeInput].forEach((input) => {
+        input.addEventListener("input", calculateRunway);
+      });
 
-    affiliateButton.addEventListener("click", () => {
-      window.alert(
-        "Affiliate tools link placeholder — replace this action with your destination URL."
-      );
-    });
+      calculatorForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        calculateRunway();
+      });
 
-    calculateRunway();
+      affiliateButton.addEventListener("click", () => {
+        window.alert(
+          "Affiliate tools link placeholder — replace this action with your destination URL."
+        );
+      });
+
+      calculateRunway();
+    })();
   </script>
 </body>
 </html>
