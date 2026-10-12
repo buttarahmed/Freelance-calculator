@@ -112,7 +112,6 @@
     .message,
     .static-ad,
     .layout,
-    .native-ad-slot,
     form,
     input,
     button {
@@ -530,16 +529,6 @@
       font-weight: 750;
     }
 
-    .native-ad-slot {
-      width: 100%;
-      min-height: 90px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.28);
-      pointer-events: auto;
-    }
-
     .ad-footer {
       margin-top: auto;
       padding-top: 13px;
@@ -725,13 +714,19 @@
           Your results update instantly as you type.
         </div>
 
-        <button class="cta" type="button" id="affiliateButton">
+        <a
+          class="cta"
+          id="affiliateButton"
+          href="https://araplhn.org/4/168a30b0917c7248849cf9848eef2761"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <span>
-            Recommended Business Tools (Affiliate Link)
+            Access Recommended Freelance Infrastructure Tools
             <small>Explore tools to streamline your freelance business</small>
           </span>
           <span class="cta-arrow" aria-hidden="true">→</span>
-        </button>
+        </a>
       </section>
 
       <aside class="ad-card" aria-label="Sponsored tools and resources">
@@ -739,11 +734,6 @@
           <div class="ad-icon" aria-hidden="true">✦</div>
           <h3>Your ad could be here</h3>
           <p>Sponsor Message · Reach independent professionals building their next chapter.</p>
-        </div>
-
-        <div class="native-ad-slot" aria-label="Native advertisement">
-          <script async="async" data-cfasync="false" src="https://bauval.org/21/f5a2ddecac5f954ffeaf19dd9cc2d248"></script>
-          <div id="container-f5a2ddecac5f954ffeaf19dd9cc2d248"></div>
         </div>
 
         <article class="static-ad figma">
@@ -778,7 +768,6 @@
       const basicNote = document.getElementById("basicNote");
       const adjustedNote = document.getElementById("adjustedNote");
       const message = document.getElementById("message");
-      const affiliateButton = document.getElementById("affiliateButton");
 
       const numberFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
 
@@ -849,11 +838,6 @@
         });
       }
 
-      if (affiliateButton) {
-        affiliateButton.addEventListener("click", () => {
-          window.alert("Affiliate tools link placeholder — replace this action with your destination URL.");
-        });
-      }
 
       calculateRunway();
     })();
