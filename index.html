@@ -270,6 +270,115 @@
       pointer-events: auto;
     }
 
+    .currency-toggle {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      margin-bottom: 18px;
+      padding: 4px;
+      gap: 4px;
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.32);
+      box-shadow: inset 0 1px 2px rgba(31, 38, 135, 0.035);
+      pointer-events: auto;
+    }
+
+    .currency-option {
+      min-width: 72px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 800;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .currency-option:hover,
+    .currency-option[aria-pressed="true"] {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 4px 12px rgba(31, 38, 135, 0.07);
+    }
+
+    .currency-option:focus-visible,
+    .budget-slider:focus-visible {
+      outline: 3px solid rgba(98, 86, 220, 0.32);
+      outline-offset: 3px;
+    }
+
+    .budget-control {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border: 1px solid var(--stroke);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
+      pointer-events: auto;
+    }
+
+    .budget-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 11px;
+    }
+
+    .budget-heading label {
+      color: var(--ink);
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .budget-value {
+      flex: 0 0 auto;
+      color: #6256dc;
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    .budget-slider {
+      width: 100%;
+      height: 7px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      outline: none;
+      appearance: none;
+      background: linear-gradient(90deg, #7162e9, #18b8c6);
+      box-shadow: none;
+      cursor: pointer;
+    }
+
+    .budget-slider::-webkit-slider-thumb {
+      width: 22px;
+      height: 22px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      appearance: none;
+      background: #7162e9;
+      box-shadow: 0 4px 12px rgba(98, 86, 220, 0.28);
+    }
+
+    .budget-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: #7162e9;
+      box-shadow: 0 4px 12px rgba(98, 86, 220, 0.28);
+    }
+
+    .budget-result {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.73rem;
+    }
+
     .calculator-grid {
       position: relative;
       z-index: 2;
@@ -669,6 +778,12 @@
           </p>
         </div>
 
+        <div class="currency-toggle" role="group" aria-label="Choose display currency">
+          <button class="currency-option" type="button" data-currency="USD" aria-pressed="true">USD ($)</button>
+          <button class="currency-option" type="button" data-currency="PKR" aria-pressed="false">PKR (Rs)</button>
+          <button class="currency-option" type="button" data-currency="EUR" aria-pressed="false">EUR (€)</button>
+        </div>
+
         <form id="calculatorForm" novalidate>
           <div class="calculator-grid">
             <div class="field">
@@ -721,6 +836,15 @@
                 />
               </div>
             </div>
+          </div>
+
+          <div class="budget-control">
+            <div class="budget-heading">
+              <label for="budgetCut">Simulate Budget Cuts (Reduce Expenses by 0% to 50%)</label>
+              <output class="budget-value" id="budgetCutValue" for="budgetCut">0%</output>
+            </div>
+            <input class="budget-slider" id="budgetCut" name="budgetCut" type="range" min="0" max="50" step="1" value="0" />
+            <div class="budget-result" id="extraRunway">Adjust the slider to see extra runway.</div>
           </div>
         </form>
 
@@ -822,13 +946,24 @@
       const savingsInput = document.getElementById("savings");
       const expensesInput = document.getElementById("expenses");
       const incomeInput = document.getElementById("income");
+      const budgetCutInput = document.getElementById("budgetCut");
+      const budgetCutValue = document.getElementById("budgetCutValue");
+      const extraRunway = document.getElementById("extraRunway");
       const calculatorForm = document.getElementById("calculatorForm");
       const basicRunway = document.getElementById("basicRunway");
       const adjustedRunway = document.getElementById("adjustedRunway");
       const basicNote = document.getElementById("basicNote");
       const adjustedNote = document.getElementById("adjustedNote");
       const message = document.getElementById("message");
+      const currencyButtons = Array.from(document.querySelectorAll(".currency-option"));
+      const currencySymbols = Array.from(document.querySelectorAll(".currency-symbol"));
 
+      const currencyMap = {
+        USD: "$",
+        PKR: "Rs",
+        EUR: "€"
+      };
+      let activeCurrency = "USD";
       const numberFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
 
       function readNumber(input) {
@@ -842,50 +977,89 @@
         return `${numberFormat.format(months)} MO`;
       }
 
+      function formatAmount(amount) {
+        return `${currencyMap[activeCurrency]}${numberFormat.format(amount)}`;
+      }
+
+      function updateCurrency(nextCurrency) {
+        if (!currencyMap[nextCurrency]) return;
+        activeCurrency = nextCurrency;
+        currencySymbols.forEach((symbol) => {
+          symbol.textContent = currencyMap[activeCurrency];
+        });
+        currencyButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.currency === activeCurrency));
+        });
+        calculateRunway();
+      }
+
       function calculateRunway() {
         const savings = readNumber(savingsInput);
         const expenses = readNumber(expensesInput);
         const income = readNumber(incomeInput);
+        const cutPercent = Math.min(50, Math.max(0, readNumber(budgetCutInput)));
+        const cutMultiplier = 1 - cutPercent / 100;
+        const effectiveExpenses = expenses * cutMultiplier;
 
-        if (expenses <= 0) {
+        budgetCutValue.textContent = `${cutPercent}%`;
+
+        if (expenses <= 0 || effectiveExpenses <= 0) {
           basicRunway.textContent = savings > 0 ? "∞" : "—";
           adjustedRunway.textContent = savings > 0 ? "∞" : "—";
           basicNote.textContent = "No monthly expenses entered";
           adjustedNote.textContent = "No monthly burn rate";
+          extraRunway.textContent = "Add monthly expenses to simulate budget cuts.";
           message.className = "message";
           message.textContent = "Add monthly expenses to calculate runway.";
           return;
         }
 
-        const standardMonths = savings / expenses;
-        const netMonthlyBurn = expenses - income;
+        const standardMonths = savings / effectiveExpenses;
+        const netMonthlyBurn = effectiveExpenses - income;
         const adjustedMonths = netMonthlyBurn > 0 ? savings / netMonthlyBurn : Infinity;
+        const originalNetBurn = expenses - income;
+        const originalAdjustedMonths = originalNetBurn > 0 ? savings / originalNetBurn : Infinity;
+        const extraMonths = adjustedMonths - originalAdjustedMonths;
 
         basicRunway.textContent = formatMonths(standardMonths);
         adjustedRunway.textContent = formatMonths(adjustedMonths);
-        basicNote.textContent = `${numberFormat.format(savings)} ÷ ${numberFormat.format(expenses)} monthly expenses`;
+        basicNote.textContent = `${formatAmount(effectiveExpenses)} effective monthly expenses`;
+
+        if (cutPercent > 0 && Number.isFinite(extraMonths) && extraMonths > 0) {
+          extraRunway.textContent = `A ${cutPercent}% cut saves approximately ${formatMonths(extraMonths)} of adjusted runway.`;
+        } else if (cutPercent > 0 && !Number.isFinite(extraMonths)) {
+          extraRunway.textContent = `A ${cutPercent}% cut keeps income-covered expenses sustainable.`;
+        } else {
+          extraRunway.textContent = "Adjust the slider to see extra runway.";
+        }
 
         if (netMonthlyBurn <= 0) {
-          adjustedNote.textContent = "Income covers your monthly expenses";
+          adjustedNote.textContent = "Income covers adjusted monthly expenses";
           message.className = "message success";
-          message.textContent = income > expenses
-            ? "Your estimated income exceeds expenses, so your savings can continue growing."
-            : "Your estimated income covers your monthly expenses.";
+          message.textContent = income > effectiveExpenses
+            ? "Your estimated income exceeds adjusted expenses, so your savings can continue growing."
+            : "Your estimated income covers your adjusted monthly expenses.";
           return;
         }
 
-        adjustedNote.textContent = `${numberFormat.format(netMonthlyBurn)} net monthly burn`;
-        const improvement = adjustedMonths - standardMonths;
-        if (improvement > 0) {
+        adjustedNote.textContent = `${formatAmount(netMonthlyBurn)} adjusted net monthly burn`;
+        if (cutPercent > 0 && extraMonths > 0) {
           message.className = "message success";
-          message.textContent = `Your freelance income adds approximately ${numberFormat.format(improvement)} month${improvement === 1 ? "" : "s"} of runway.`;
+          message.textContent = `Your simulated budget cut adds approximately ${formatMonths(extraMonths)} of runway.`;
+        } else if (income > 0) {
+          message.className = "message success";
+          message.textContent = "Your estimated freelance income is extending your runway.";
         } else {
-          message.className = "message warning";
-          message.textContent = "Your current income does not yet offset your monthly expenses.";
+          message.className = "message";
+          message.textContent = "Use the slider to model a lower monthly burn rate.";
         }
       }
 
-      [savingsInput, expensesInput, incomeInput].forEach((input) => {
+      currencyButtons.forEach((button) => {
+        button.addEventListener("click", () => updateCurrency(button.dataset.currency));
+      });
+
+      [savingsInput, expensesInput, incomeInput, budgetCutInput].forEach((input) => {
         if (!input) return;
         input.addEventListener("input", calculateRunway, { passive: true });
         input.addEventListener("change", calculateRunway, { passive: true });
@@ -897,7 +1071,6 @@
           calculateRunway();
         });
       }
-
 
       calculateRunway();
     })();
